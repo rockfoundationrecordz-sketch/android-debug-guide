@@ -191,6 +191,11 @@
   .checklist li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink-2); }
   .checklist .tick { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--good-soft); color: var(--good); display: grid; place-items: center; font-size: 13px; font-weight: 800; }
 
+  /* helper download */
+  .howto { margin: 12px 0 6px; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; color: var(--ink-2); }
+  .howto li::marker { color: var(--accent); font-weight: 700; }
+  .dl-meta { font-size: 12.5px; color: var(--ink-3); margin: 8px 0 0; }
+
   /* details */
   details { background: var(--surface); border-radius: var(--radius-s); padding: 4px 14px; margin: 8px 0; box-shadow: 0 1px 2px rgba(16,20,24,.05); }
   summary { cursor: pointer; font-weight: 650; font-size: 14px; padding: 12px 0; list-style: none; display: flex; justify-content: space-between; align-items: center; }
@@ -232,7 +237,7 @@
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Android setup guide</span>
     <h1>Wireless debugging, step by step</h1>
-    <p class="lede">Pair your phone with a computer over Wi-Fi. No cable, no app to install. About two minutes.</p>
+    <p class="lede">Pair your phone with a computer over Wi-Fi. No cable. About two minutes. The optional helper app points at each button for you.</p>
     <p class="meta">Android 11 or newer · Samsung, Pixel, and most brands</p>
   </div>
 </header>
@@ -245,6 +250,32 @@
 </div>
 
 <main class="wrap">
+
+  <!-- HELPER APP -->
+  <section class="card" aria-label="Optional helper app">
+    <span class="stepno">Optional helper</span>
+    <h2>Let the app point at the buttons</h2>
+    <p>Settings Guide draws a blue ring around the exact row to tap inside Android Settings and shows a Next button to move it along. The six steps below work without it.</p>
+    <a class="cta" id="apk" href="settings-guide.apk" download="settings-guide.apk" rel="noopener">
+      Download the helper app <span class="chev">&#8595;</span>
+    </a>
+    <p class="dl-meta">Android 11+ · 74 KB · version 1.11</p>
+    <ol class="howto">
+      <li>Tap the button. If the browser says installs are blocked, allow installs from this source.</li>
+      <li>Open the finished download from the notification or Files &rarr; Downloads.</li>
+      <li>Tap <b>Install</b>, then <b>Open</b>. If Samsung Auto Blocker blocks it, turn Auto Blocker off in Security and privacy and retry.</li>
+      <li>In the app, tap <b>Accessibility settings</b> and turn on <b>Settings Guide</b>. If that toggle is greyed out, open App info, the three-dot menu, and choose <b>Allow restricted settings</b>.</li>
+      <li>Back in the app, tap <b>Start guide</b>. Inside Settings, tap the blue <b>Next</b> button to move the ring on.</li>
+    </ol>
+    <details>
+      <summary>What it does, and what it never does</summary>
+      <p>It reads the Settings screen you are looking at, finds the row by name, and draws the ring and the Next button as an overlay. It never taps a switch for you: every toggle and every Install-confirm tap is yours. The app has no internet permission and nothing leaves the phone. Tap <b>Stop highlighting</b> in the app, or close the guide, and the overlay goes away.</p>
+    </details>
+    <details>
+      <summary>Verify the download</summary>
+      <p>SHA-256 of settings-guide.apk:<br><code style="word-break:break-all;font-size:12px">bdfcafc02ded4b9cfc1b4ad60b447233ebc02b4fd6de1160f10a5e2d5bf0f3bb</code></p>
+    </details>
+  </section>
 
   <!-- STEP 1 -->
   <section class="step active" data-step="0" aria-label="Step 1: Open About phone">
