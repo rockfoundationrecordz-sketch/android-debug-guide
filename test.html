@@ -3,26 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>intent test</title>
+<title>intent test 2</title>
 <style>
   body { font: 16px/1.4 sans-serif; margin: 0; padding: 18px; background: #111; color: #eee; }
-  p { color: #aaa; font-size: 14px; }
-  a { display: block; margin: 10px 0; padding: 16px; border-radius: 10px; background: #1f2a36; color: #9fd0ff; text-decoration: none; font-weight: 700; border: 1px solid #33475c; }
-  a:active { background: #2a3b4e; }
+  a { display: block; margin: 10px 0; padding: 18px; border-radius: 10px; background: #1f2a36; color: #9fd0ff; text-decoration: none; font-weight: 700; border: 1px solid #33475c; }
 </style>
 </head>
 <body>
-<h1 style="font-size:20px">intent:// probe</h1>
-<p>Each button tries a different URI form for the same screen. Note which one opens Settings.</p>
-
-<a id="t1" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;end">1 action only, empty host</a>
-<a id="t2" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;S.browser_fallback_url=https%3A%2F%2Fexample.com;end">2 action + package + fallback url</a>
-<a id="t3" href="intent://#Intent;component=com.android.settings/.Settings%24MyDeviceInfoActivity;end">3 component form (encoded dollar)</a>
-<a id="t4" href="android-app://com.android.settings#Intent;action=android.settings.DEVICE_INFO_SETTINGS;end">4 android-app scheme</a>
-<a id="t5" href="intent://settings/#Intent;action=android.settings.DEVICE_INFO_SETTINGS;package=com.android.settings;end">5 action + package, path in host</a>
-
-<h2 style="font-size:16px;margin-top:22px">Developer options</h2>
-<a id="t6" href="intent://#Intent;component=com.android.settings/.Settings%24DevelopmentSettingsActivity;end">6 dev options via component</a>
-<a id="t7" href="intent://#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;package=com.android.settings;end">7 dev options action + package</a>
+<h1 style="font-size:20px">intent probe 2</h1>
+<a id="y1" href="intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.google.android.youtube;S.browser_fallback_url=https%3A%2F%2Fexample.com%2Fy1;end">Y1 youtube, launcher action, fallback</a>
+<a id="s1" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;S.browser_fallback_url=https%3A%2F%2Fexample.com%2Fs1;end">S1 settings about, fallback</a>
+<a id="s2" href="intent://whatever/#Intent;action=android.settings.DEVICE_INFO_SETTINGS;package=com.android.settings;S.browser_fallback_url=https%3A%2F%2Fexample.com%2Fs2;end">S2 settings about, path host, fallback</a>
+<a id="s3" href="intent://#Intent;component=com.android.settings/.Settings%24MyDeviceInfoActivity;S.browser_fallback_url=https%3A%2F%2Fexample.com%2Fs3;end">S3 settings component, fallback</a>
+<a id="plain" href="https://example.com/plain">P plain https link</a>
 </body>
 </html>
