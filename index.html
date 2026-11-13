@@ -237,7 +237,7 @@
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Android setup guide</span>
     <h1>Wireless debugging, step by step</h1>
-    <p class="lede">Pair your phone with a computer over Wi-Fi. No cable. About two minutes. The optional helper app points at each button for you.</p>
+    <p class="lede">Pair your phone with a computer over Wi-Fi. No cable. About two minutes. The optional helper app can do the setup for you, or point at each button.</p>
     <p class="meta">Android 11 or newer · Samsung, Pixel, and most brands</p>
   </div>
 </header>
@@ -254,26 +254,26 @@
   <!-- HELPER APP -->
   <section class="card" aria-label="Optional helper app">
     <span class="stepno">Optional helper</span>
-    <h2>Let the app point at the buttons</h2>
-    <p>Settings Guide draws a blue ring around the exact row to tap inside Android Settings and shows a Next button to move it along. The six steps below work without it.</p>
+    <h2>Let the app do the setup</h2>
+    <p>Settings Guide has two modes. <b>Set it up for me</b> opens Settings and presses the right rows by name, then stops on the pairing dialog with the code and address to type on the computer. <b>Guide me instead</b> draws a blue ring around each row and a Next button to move it along. The six steps below work without it.</p>
     <a class="cta" id="apk" href="settings-guide.apk" download="settings-guide.apk" rel="noopener">
       Download the helper app <span class="chev">&#8595;</span>
     </a>
-    <p class="dl-meta">Android 11+ · 74 KB · version 1.11</p>
+    <p class="dl-meta">Android 11+ · 84 KB · version 1.13</p>
     <ol class="howto">
       <li>Tap the button. If the browser says installs are blocked, allow installs from this source.</li>
       <li>Open the finished download from the notification or Files &rarr; Downloads.</li>
       <li>Tap <b>Install</b>, then <b>Open</b>. If Samsung Auto Blocker blocks it, turn Auto Blocker off in Security and privacy and retry.</li>
       <li>In the app, tap <b>Accessibility settings</b> and turn on <b>Settings Guide</b>. If that toggle is greyed out, open App info, the three-dot menu, and choose <b>Allow restricted settings</b>.</li>
-      <li>Back in the app, tap <b>Start guide</b>. Inside Settings, tap the blue <b>Next</b> button to move the ring on.</li>
+      <li>Back in the app, tap <b>Set it up for me</b> and keep your hands off the screen while it works, or <b>Guide me instead</b> to be shown each row.</li>
     </ol>
     <details>
       <summary>What it does, and what it never does</summary>
-      <p>It reads the Settings screen you are looking at, finds the row by name, and draws the ring and the Next button as an overlay. It never taps a switch for you: every toggle and every Install-confirm tap is yours. The app has no internet permission and nothing leaves the phone. Tap <b>Stop highlighting</b> in the app, or close the guide, and the overlay goes away.</p>
+      <p>It reads the Settings screen you are looking at and works by row name. In setup mode it presses only these: About phone, Software information, Build number seven times, Developer options, Wireless debugging, its on switch if — and only if — it reads the switch as off, Allow on the network prompt, and Pair device with pairing code. Every other toggle and every Install-confirm tap stays yours. The app has no internet permission and nothing leaves the phone. Tap <b>Stop</b> in the app and the overlay goes away.</p>
     </details>
     <details>
       <summary>Verify the download</summary>
-      <p>SHA-256 of settings-guide.apk:<br><code style="word-break:break-all;font-size:12px">bdfcafc02ded4b9cfc1b4ad60b447233ebc02b4fd6de1160f10a5e2d5bf0f3bb</code></p>
+      <p>SHA-256 of settings-guide.apk:<br><code style="word-break:break-all;font-size:12px">e0dc98c75c43c6bbb1f53e3617ab7eaab36cee73082886ba1a1779d72bb68dd3</code></p>
     </details>
   </section>
 
