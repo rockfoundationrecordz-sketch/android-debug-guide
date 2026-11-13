@@ -79,6 +79,11 @@
   .hint { display: flex; gap: 10px; font-size: 13.5px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-s); padding: 10px 12px; color: var(--ink-2); }
   .hint b { color: var(--ink); font-weight: 650; }
   .note { font-size: 13px; color: var(--warn); background: var(--warn-soft); border-radius: var(--radius-s); padding: 10px 12px; }
+  .shade { display: flex; align-items: center; gap: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-s); padding: 12px; margin: 0 0 14px; font-size: 13.5px; color: var(--ink-2); }
+  .shade b { color: var(--ink); font-weight: 650; }
+  .shade-sub { font-size: 12.5px; color: var(--ink-3); }
+  .gear { position: relative; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 20px; color: #3c434b; box-shadow: 0 1px 3px rgba(16,20,24,.12); }
+  .gear::after { content: ""; position: absolute; inset: -4px; border: 2.5px solid var(--accent); border-radius: 50%; animation: ring 1.9s ease-in-out infinite; pointer-events: none; }
 
   /* CTA */
   .cta {
@@ -245,26 +250,28 @@
     <div class="card">
       <span class="stepno">Step 1 of 6</span>
       <h2>Open About phone</h2>
-      <p>Tap the button below. Your phone jumps straight to the <span class="path">About phone</span> screen in Settings.</p>
+      <p>Open <span class="path">Settings</span>, then tap <span class="path">About phone</span>.</p>
+
+      <div class="shade">
+        <span class="gear" aria-hidden="true">&#9881;</span>
+        <div><b>Swipe down from the top of the screen twice</b><br><span class="shade-sub">Then tap the highlighted gear icon. No gear in the shade? Open Settings from your app drawer instead.</span></div>
+      </div>
 
       <div class="device">
         <div class="screen">
           <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
-          <div class="appbar"><span class="back">&#8249;</span><h4>About phone</h4><span></span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>Settings</h4><span></span></div>
           <ul class="rows">
-            <li class="row"><span>Device name</span><span class="chev">&#8250;</span></li>
-            <li class="row"><span>Status information</span><span class="chev">&#8250;</span></li>
-            <li class="row"><span>Battery information</span><span class="chev">&#8250;</span></li>
-            <li class="row target"><span>Software information</span><span class="chev">&#8250;</span><span class="tapchip">Tap</span></li>
-            <li class="row ghost">Legal information</li>
+            <li class="row"><span>Connections</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Sounds and vibration</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Notifications</span><span class="chev">&#8250;</span></li>
+            <li class="row ghost">Display · Battery · Storage</li>
+            <li class="row target"><span>About phone</span><span class="chev">&#8250;</span><span class="tapchip">Tap</span></li>
           </ul>
         </div>
       </div>
 
-      <a class="cta" id="open-about" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
-        Open About phone <span class="chev">&#8250;</span>
-      </a>
-      <p class="privacy" id="android-note" style="margin-top:10px">Then tap <b>Software information</b> in that list.</p>
+      <div class="hint"><span>&#9432;</span><div>About phone is the last item on Samsung and most brands, and the first item on Pixel. The search icon at the top of Settings finds it by name.</div></div>
     </div>
   </section>
 
@@ -273,7 +280,7 @@
     <div class="card">
       <span class="stepno">Step 2 of 6</span>
       <h2>Tap Build number seven times</h2>
-      <p>On the Software information screen, find <span class="path">Build number</span> and tap it seven times. A toast counts down, then says you are a developer.</p>
+      <p>On the About phone screen, tap <span class="path">Software information</span>. Find <span class="path">Build number</span> at the bottom and tap it seven times. A toast counts down, then says you are a developer.</p>
 
       <div class="device">
         <div class="screen">
@@ -291,10 +298,7 @@
       <div class="count" id="pips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <p class="toast" id="toast" role="status" aria-live="polite">Try it here first. Count the taps, then do it on your phone.</p>
 
-      <a class="cta secondary" id="open-about-2" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
-        Reopen About phone <span class="chev">&#8250;</span>
-      </a>
-      <p class="privacy" style="margin-top:10px">Developer options appears at the bottom of Settings once you do this.</p>
+      <p class="privacy" style="margin-top:10px">Developer options appears in your Settings list once you do this.</p>
     </div>
   </section>
 
@@ -303,7 +307,7 @@
     <div class="card">
       <span class="stepno">Step 3 of 6</span>
       <h2>Open Developer options</h2>
-      <p>Go back to the main Settings list and scroll to the bottom. <span class="path">Developer options</span> is the last item. The button opens it directly.</p>
+      <p>Go back to the main Settings list and scroll to the bottom. <span class="path">Developer options</span> is the last item, right above About phone.</p>
 
       <div class="device">
         <div class="screen">
@@ -319,11 +323,7 @@
         </div>
       </div>
 
-      <a class="cta" id="open-dev" href="intent://#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
-        Open Developer options <span class="chev">&#8250;</span>
-      </a>
-      <div class="hint" style="margin-top:12px"><span>&#9432;</span><div>If the phone says that screen is not available, go back to step 2. The seven taps unlock it.</div></div>
-    </div>
+      <div class="hint" style="margin-top:12px"><span>&#9432;</span><div>Don't see Developer options? Go back to step 2 and tap Build number seven times again. On some brands it lives under <b>System</b> instead.</div></div>    </div>
   </section>
 
   <!-- STEP 4 -->
@@ -453,8 +453,8 @@
   <section aria-label="Troubleshooting" style="margin-top:22px">
     <h2 style="font-size:18px;margin:0 0 6px">If a step doesn't work</h2>
     <details>
-      <summary>The Open button does nothing</summary>
-      <p>Deep links work in Chrome on Android. If you are in another browser or app, open Settings manually: swipe down twice and tap the gear icon, or open the app drawer and tap Settings.</p>
+      <summary>I can't find a screen from the steps</summary>
+      <p>Brands move and rename settings. About phone is the first item on Pixel and the last on Samsung and most others. The search icon at the top of Settings finds any screen by name, including <b>wireless debugging</b> and <b>build number</b>.</p>
     </details>
     <details>
       <summary>Wireless debugging keeps switching off</summary>
@@ -517,14 +517,6 @@
     idx = idx === total - 1 ? 0 : idx + 1;
     render();
   });
-
-  // deep links: warn when not on Android after a click
-  var android = /Android/i.test(navigator.userAgent);
-  if (!android) {
-    var note = document.getElementById("android-note");
-    note.textContent = "You are not on an Android phone, so the button below won't open Settings. Open this page on the phone to use it.";
-    note.style.color = "var(--warn)";
-  }
 
   // step 2 tap demo
   var taps = 0;
