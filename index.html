@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wireless debugging, step by step</title>
+<meta name="description" content="A guided six-step setup for pairing an Android phone to a computer over Wi-Fi: unlock Developer options, enable Wireless debugging, and pair with a code.">
+<meta name="theme-color" content="#101418">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a7cff'/%3E%3Cpath d='M22 40l20-16M22 24h.01M42 40h.01' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --surface-2: #f7f8fa;
+    --ink: #101418;
+    --ink-2: #4f5964;
+    --ink-3: #75808c;
+    --line: #e3e7ec;
+    --accent: #0a7cff;
+    --accent-ink: #ffffff;
+    --accent-soft: #e7f1ff;
+    --good: #128f4c;
+    --good-soft: #e5f6ec;
+    --warn: #a3650a;
+    --warn-soft: #fdf3e2;
+    --radius: 20px;
+    --radius-s: 14px;
+    --space: 16px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace;
+    --motion: 220ms;
+    --shadow: 0 10px 30px rgba(16, 20, 24, .10), 0 2px 6px rgba(16, 20, 24, .05);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+
+  header.hero { padding: 28px 0 8px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 6px 10px; border-radius: 999px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  h1 { font-size: clamp(26px, 7vw, 34px); line-height: 1.12; letter-spacing: -.02em; margin: 14px 0 8px; }
+  .lede { color: var(--ink-2); font-size: 16px; margin: 0 0 6px; }
+  .meta { color: var(--ink-3); font-size: 13.5px; }
+
+  /* progress */
+  .progress { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); padding: 10px 0; margin-bottom: 6px; }
+  .bar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 16.6%; background: var(--accent); border-radius: 999px; transition: width var(--motion) ease; }
+  .dots { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
+  .dots span.done { color: var(--good); }
+  .dots span.now { color: var(--accent); }
+
+  /* step card */
+  .step { display: none; animation: rise var(--motion) ease both; }
+  .step.active { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .card {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 22px 20px; margin: 10px 0 16px;
+  }
+  .stepno { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  h2 { font-size: 23px; letter-spacing: -.015em; margin: 6px 0 10px; }
+  .card p { margin: 0 0 12px; color: var(--ink-2); }
+  .card p:last-child { margin-bottom: 0; }
+  .path { font-weight: 600; color: var(--ink); }
+  .hint { display: flex; gap: 10px; font-size: 13.5px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-s); padding: 10px 12px; color: var(--ink-2); }
+  .hint b { color: var(--ink); font-weight: 650; }
+  .note { font-size: 13px; color: var(--warn); background: var(--warn-soft); border-radius: var(--radius-s); padding: 10px 12px; }
+
+  /* CTA */
+  .cta {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; border: 0; border-radius: var(--radius-s);
+    background: var(--accent); color: var(--accent-ink);
+    font: 700 16px/1 var(--font); padding: 16px; margin-top: 14px;
+    cursor: pointer; text-decoration: none;
+  }
+  .cta:active { transform: translateY(1px); }
+  .cta.secondary { background: var(--surface); color: var(--accent); border: 1.5px solid var(--accent); }
+  .cta .chev { font-size: 18px; margin-left: auto; opacity: .8; }
+
+  /* phone mock */
+  .device {
+    width: min(300px, 82vw); margin: 6px auto 4px;
+    background: #0b0e11; border-radius: 34px; padding: 9px;
+    box-shadow: 0 24px 50px rgba(16, 20, 24, .18);
+  }
+  .screen { background: #f4f5f7; border-radius: 27px; overflow: hidden; color: #14171a; }
+  .sbar { display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 700; padding: 7px 16px 2px; color: #3c434b; }
+  .sbar .pill { width: 62px; height: 16px; border-radius: 999px; background: #0b0e11; margin: 0 auto; }
+  .appbar { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; padding: 8px 10px 10px; }
+  .appbar .back { font-size: 22px; line-height: 1; color: #14171a; padding-left: 6px; }
+  .appbar h4 { margin: 0; font-size: 15.5px; font-weight: 700; text-align: center; letter-spacing: -.01em; }
+  .rows { list-style: none; margin: 0; padding: 0 12px 16px; display: grid; gap: 7px; }
+  .row {
+    position: relative; display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 13px; padding: 13px 12px;
+    font-size: 13.5px; font-weight: 600; color: #14171a;
+    box-shadow: 0 1px 2px rgba(16,20,24,.05);
+  }
+  .row .sub { display: block; font-size: 11px; font-weight: 500; color: #7b838c; margin-top: 2px; }
+  .row .chev { margin-left: auto; color: #a6adb5; font-size: 16px; }
+  .row.ghost { background: transparent; box-shadow: none; color: #7b838c; font-weight: 500; }
+  .row.target::after {
+    content: ""; position: absolute; inset: -3px; border: 2.5px solid var(--accent);
+    border-radius: 15px; pointer-events: none;
+    animation: ring 1.9s ease-in-out infinite;
+  }
+  .row.target.good::after { border-color: var(--good); animation: none; }
+  .tapchip {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: var(--accent); color: #fff; font-size: 10.5px; font-weight: 800;
+    letter-spacing: .04em; padding: 5px 9px; border-radius: 999px; text-transform: uppercase;
+  }
+  @keyframes ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(10, 124, 255, .28); }
+    50% { box-shadow: 0 0 0 7px rgba(10, 124, 255, 0); }
+  }
+  .toggle { margin-left: auto; width: 40px; height: 24px; border-radius: 999px; background: #cfd5db; position: relative; flex: 0 0 auto; }
+  .toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform var(--motion) ease; }
+  .toggle.on { background: var(--good); }
+  .toggle.on::after { transform: translateX(16px); }
+  .dialog {
+    margin: 0 12px 16px; background: #fff; border-radius: 16px; padding: 14px;
+    box-shadow: 0 1px 2px rgba(16,20,24,.05);
+  }
+  .dialog h5 { margin: 0 0 4px; font-size: 13.5px; }
+  .dialog p { margin: 0 0 10px; font-size: 11.5px; color: #7b838c; }
+  .codebox { display: flex; gap: 6px; }
+  .codebox span { flex: 1; text-align: center; font-family: var(--mono); font-size: 16px; font-weight: 700; background: #f4f5f7; border-radius: 8px; padding: 8px 0; color: #14171a; }
+  .ipline { margin-top: 10px; font-family: var(--mono); font-size: 11.5px; color: #3c434b; background: #f4f5f7; border-radius: 8px; padding: 8px 10px; }
+
+  /* build number demo */
+  .buildrow { cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .buildrow:active { background: #f1f4f8; }
+  .count { display: flex; gap: 5px; justify-content: center; margin: 12px 0 0; }
+  .count i { width: 16px; height: 5px; border-radius: 999px; background: var(--line); transition: background var(--motion) ease; }
+  .count i.on { background: var(--accent); }
+  .toast {
+    margin: 12px auto 0; max-width: 300px; text-align: center; font-size: 13px; color: var(--ink-2);
+    min-height: 20px;
+  }
+  .toast.developer { color: var(--good); font-weight: 700; }
+
+  /* commands */
+  .cmd { position: relative; margin: 10px 0 14px; }
+  .cmd label { display: block; font-size: 12px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .cmd code, .out {
+    display: block; font-family: var(--mono); font-size: 13px; line-height: 1.45;
+    background: #0f1419; color: #e7edf3; border-radius: 12px; padding: 12px 92px 12px 12px;
+    overflow-x: auto; white-space: pre;
+  }
+  .copy {
+    position: absolute; right: 8px; bottom: 8px;
+    border: 1px solid #33404c; background: #1b232b; color: #dbe4ec;
+    font: 600 11.5px var(--font); padding: 7px 11px; border-radius: 8px; cursor: pointer;
+  }
+  .copy.ok { border-color: var(--good); color: #9fe6bb; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 4px; }
+  .fields .wide { grid-column: 1 / -1; }
+  .field label { display: block; font-size: 12px; font-weight: 700; color: var(--ink-3); margin-bottom: 5px; }
+  .field input {
+    width: 100%; font: 500 15px var(--mono); color: var(--ink);
+    background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 11px 12px; outline: none;
+  }
+  .field input:focus { border-color: var(--accent); background: #fff; }
+  .privacy { font-size: 12px; color: var(--ink-3); margin-top: 6px; }
+
+  /* finish */
+  .checklist { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 8px; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ink-2); }
+  .checklist .tick { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--good-soft); color: var(--good); display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+
+  /* details */
+  details { background: var(--surface); border-radius: var(--radius-s); padding: 4px 14px; margin: 8px 0; box-shadow: 0 1px 2px rgba(16,20,24,.05); }
+  summary { cursor: pointer; font-weight: 650; font-size: 14px; padding: 12px 0; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--ink-3); font-weight: 400; font-size: 18px; }
+  details[open] summary::after { content: "\2013"; }
+  details p { margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
+
+  /* bottom nav */
+  .nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .nav .inner { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+  .nav button {
+    border-radius: 12px; padding: 14px; font: 700 15px var(--font); cursor: pointer;
+    border: 0; background: var(--surface-2); color: var(--ink-2);
+  }
+  .nav button.primary { background: var(--accent); color: #fff; }
+  .nav button:disabled { opacity: .4; cursor: default; }
+
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-3); padding: 10px 0 30px; }
+  a { color: var(--accent); }
+  .hidden { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+  @media (min-width: 480px) {
+    .card { padding: 26px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Android setup guide</span>
+    <h1>Wireless debugging, step by step</h1>
+    <p class="lede">Pair your phone with a computer over Wi-Fi. No cable, no app to install. About two minutes.</p>
+    <p class="meta">Android 11 or newer · Samsung, Pixel, and most brands</p>
+  </div>
+</header>
+
+<div class="progress">
+  <div class="wrap">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- STEP 1 -->
+  <section class="step active" data-step="0" aria-label="Step 1: Open About phone">
+    <div class="card">
+      <span class="stepno">Step 1 of 6</span>
+      <h2>Open About phone</h2>
+      <p>Tap the button below. Your phone jumps straight to the <span class="path">About phone</span> screen in Settings.</p>
+
+      <div class="device">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>About phone</h4><span></span></div>
+          <ul class="rows">
+            <li class="row"><span>Device name</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Status information</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Battery information</span><span class="chev">&#8250;</span></li>
+            <li class="row target"><span>Software information</span><span class="chev">&#8250;</span><span class="tapchip">Tap</span></li>
+            <li class="row ghost">Legal information</li>
+          </ul>
+        </div>
+      </div>
+
+      <a class="cta" id="open-about" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
+        Open About phone <span class="chev">&#8250;</span>
+      </a>
+      <p class="privacy" id="android-note" style="margin-top:10px">Then tap <b>Software information</b> in that list.</p>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step" data-step="1" aria-label="Step 2: Tap Build number seven times">
+    <div class="card">
+      <span class="stepno">Step 2 of 6</span>
+      <h2>Tap Build number seven times</h2>
+      <p>On the Software information screen, find <span class="path">Build number</span> and tap it seven times. A toast counts down, then says you are a developer.</p>
+
+      <div class="device">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>Software information</h4><span></span></div>
+          <ul class="rows">
+            <li class="row"><span>Android version<span class="sub">15</span></span></li>
+            <li class="row"><span>Google Play system update</span></li>
+            <li class="row"><span>Kernel version</span></li>
+            <li class="row buildrow target" id="build-row" role="button" tabindex="0" aria-label="Build number, tap seven times"><span>Build number<span class="sub" id="build-count">Tap 7 times</span></span><span class="tapchip">Tap</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="count" id="pips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="toast" id="toast" role="status" aria-live="polite">Try it here first. Count the taps, then do it on your phone.</p>
+
+      <a class="cta secondary" id="open-about-2" href="intent://#Intent;action=android.settings.DEVICE_INFO_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
+        Reopen About phone <span class="chev">&#8250;</span>
+      </a>
+      <p class="privacy" style="margin-top:10px">Developer options appears at the bottom of Settings once you do this.</p>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step" data-step="2" aria-label="Step 3: Open Developer options">
+    <div class="card">
+      <span class="stepno">Step 3 of 6</span>
+      <h2>Open Developer options</h2>
+      <p>Go back to the main Settings list and scroll to the bottom. <span class="path">Developer options</span> is the last item. The button opens it directly.</p>
+
+      <div class="device">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>Settings</h4><span></span></div>
+          <ul class="rows">
+            <li class="row"><span>Connections</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Sounds and vibration</span><span class="chev">&#8250;</span></li>
+            <li class="row"><span>Notifications</span><span class="chev">&#8250;</span></li>
+            <li class="row ghost">Display · Battery · Storage</li>
+            <li class="row target"><span>Developer options</span><span class="chev">&#8250;</span><span class="tapchip">Tap</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <a class="cta" id="open-dev" href="intent://#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;category=android.intent.category.DEFAULT;package=com.android.settings;end">
+        Open Developer options <span class="chev">&#8250;</span>
+      </a>
+      <div class="hint" style="margin-top:12px"><span>&#9432;</span><div>If the phone says that screen is not available, go back to step 2. The seven taps unlock it.</div></div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step" data-step="3" aria-label="Step 4: Turn on Wireless debugging">
+    <div class="card">
+      <span class="stepno">Step 4 of 6</span>
+      <h2>Turn on Wireless debugging</h2>
+      <p>Scroll the Developer options list until you see <span class="path">Wireless debugging</span>. Tap the row, then switch it on. Keep the phone on the same Wi-Fi as the computer.</p>
+
+      <div class="device">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>Developer options</h4><span></span></div>
+          <ul class="rows">
+            <li class="row"><span>USB debugging<span class="sub">Off</span></span><span class="toggle"></span></li>
+            <li class="row target"><span>Wireless debugging<span class="sub">Pair over Wi-Fi</span></span><span class="toggle on"></span></li>
+            <li class="row"><span>Default USB configuration</span><span class="chev">&#8250;</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hint"><span>&#9432;</span><div>Can't find the row? Tap the search icon at the top of Settings and type <b>wireless debugging</b>.</div></div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step" data-step="4" aria-label="Step 5: Get a pairing code">
+    <div class="card">
+      <span class="stepno">Step 5 of 6</span>
+      <h2>Get a pairing code</h2>
+      <p>Tap <span class="path">Pair device with pairing code</span>. A dialog shows a six-digit code plus an address like <span class="path">192.168.1.50:37123</span>. Leave it open. Codes expire in a few minutes.</p>
+
+      <div class="device">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="pill"></span><span>&#9679;&#9679;&#9679;</span></div>
+          <div class="appbar"><span class="back">&#8249;</span><h4>Wireless debugging</h4><span></span></div>
+          <ul class="rows" style="padding-bottom:8px">
+            <li class="row"><span>Wireless debugging</span><span class="toggle on"></span></li>
+            <li class="row target"><span>Pair device with pairing code</span><span class="chev">&#8250;</span><span class="tapchip">Tap</span></li>
+          </ul>
+          <div class="dialog">
+            <h5>Pair with device</h5>
+            <p>Enter this on the computer. Keep this screen open.</p>
+            <div class="codebox"><span>&#8226;</span><span>&#8226;</span><span>&#8226;</span><span>&#8226;</span><span>&#8226;</span><span>&#8226;</span></div>
+            <div class="ipline">Wi-Fi pairing code · 192.168.1.50:37123</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="note">Only pair with a computer you control. Anyone who pairs can control this phone until the code expires or you turn Wireless debugging off.</p>
+    </div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="step" data-step="5" aria-label="Step 6: Pair from your computer">
+    <div class="card">
+      <span class="stepno">Step 6 of 6</span>
+      <h2>Pair from your computer</h2>
+      <p>Type the code and address from the dialog into the fields below. Everything stays on this page, nothing is sent anywhere.</p>
+
+      <div class="fields">
+        <div class="field wide">
+          <label for="f-ip">Phone IP address</label>
+          <input id="f-ip" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="192.168.1.50">
+        </div>
+        <div class="field">
+          <label for="f-pport">Pairing port (dialog)</label>
+          <input id="f-pport" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="37123">
+        </div>
+        <div class="field">
+          <label for="f-code">6-digit code</label>
+          <input id="f-code" inputmode="numeric" autocomplete="one-time-code" spellcheck="false" maxlength="6" placeholder="000000">
+        </div>
+      </div>
+
+      <div class="cmd">
+        <label>1 · Pair</label>
+        <code id="out-pair" class="out">adb pair 192.168.1.50:37123</code>
+        <button class="copy" data-copy="out-pair" type="button">Copy</button>
+      </div>
+      <p class="privacy">Run it, then enter the code when asked (or paste the full command). You should see <b>Successfully paired</b>.</p>
+
+      <div class="fields" style="margin-top:14px">
+        <div class="field">
+          <label for="f-cport">Connect port (switch screen)</label>
+          <input id="f-cport" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="5555">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <div class="hint" style="padding:9px 10px;font-size:12px">Shown under the switch, not in the dialog.</div>
+        </div>
+      </div>
+      <div class="cmd">
+        <label>2 · Connect</label>
+        <code id="out-conn" class="out">adb connect 192.168.1.50:5555</code>
+        <button class="copy" data-copy="out-conn" type="button">Copy</button>
+      </div>
+      <p class="privacy">Then check with <b>adb devices</b>. Your phone should be listed.</p>
+
+      <details>
+        <summary>I don't have adb on the computer</summary>
+        <p>Install Google's Platform Tools on the computer. On Windows, download the zip from <a href="https://developer.android.com/tools/releases/platform-tools" target="_blank" rel="noopener">developer.android.com</a>, unzip it, and open a terminal in that folder. On macOS or Linux, use <b>brew install android-platform-tools</b> or your package manager.</p>
+      </details>
+      <details>
+        <summary>Pairing failed or the code expired</summary>
+        <p>Close the dialog and open <b>Pair device with pairing code</b> again. Use the newest code and the port from the dialog, not the port under the switch. Both the phone and the computer must be on the same network, and a VPN on either side can block the connection.</p>
+      </details>
+      <details>
+        <summary>adb lists the phone as unauthorized</summary>
+        <p>Tap <b>Allow</b> on the "Allow USB debugging?" prompt on the phone. If no prompt appears, revoke authorizations in Developer options and reconnect.</p>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:20px">Done when</h2>
+      <ul class="checklist">
+        <li><span class="tick">&#10003;</span><span>Developer options is in your Settings list</span></li>
+        <li><span class="tick">&#10003;</span><span>Wireless debugging is on</span></li>
+        <li><span class="tick">&#10003;</span><span>Pairing reported success</span></li>
+        <li><span class="tick">&#10003;</span><span><b>adb devices</b> lists your phone</span></li>
+      </ul>
+      <button class="cta secondary" id="share" type="button">Share this guide</button>
+    </div>
+  </section>
+
+  <!-- troubleshooting -->
+  <section aria-label="Troubleshooting" style="margin-top:22px">
+    <h2 style="font-size:18px;margin:0 0 6px">If a step doesn't work</h2>
+    <details>
+      <summary>The Open button does nothing</summary>
+      <p>Deep links work in Chrome on Android. If you are in another browser or app, open Settings manually: swipe down twice and tap the gear icon, or open the app drawer and tap Settings.</p>
+    </details>
+    <details>
+      <summary>Wireless debugging keeps switching off</summary>
+      <p>Android turns it off after a restart, and the pairing session ends when the dialog closes. Turn the switch on again and reopen the pairing dialog when needed.</p>
+    </details>
+    <details>
+      <summary>The computer can't reach the phone</summary>
+      <p>Check that both devices are on the same Wi-Fi and that the phone's screen is unlocked. Guest Wi-Fi networks and router settings that isolate clients block this kind of connection. Mobile hotspot works too if the computer joins it.</p>
+    </details>
+  </section>
+
+  <footer>
+    Runs entirely in your browser. No accounts, no tracking, no data sent.<br>
+    Android 11+ · Developer options and Wireless debugging are standard Android features.
+  </footer>
+</main>
+
+<nav class="nav" aria-label="Step navigation">
+  <div class="inner">
+    <button id="back" type="button">Back</button>
+    <button id="next" class="primary" type="button">Next step</button>
+  </div>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+  var total = steps.length;
+  var idx = 0;
+
+  var bar = document.getElementById("bar");
+  var dots = document.getElementById("dots");
+  var back = document.getElementById("back");
+  var next = document.getElementById("next");
+
+  var labels = ["About", "Build", "Developer", "Wireless", "Code", "Pair"];
+  labels.forEach(function (name, i) {
+    var s = document.createElement("span");
+    s.textContent = name;
+    dots.appendChild(s);
+  });
+
+  function render() {
+    steps.forEach(function (el, i) { el.classList.toggle("active", i === idx); });
+    bar.style.width = ((idx + 1) / total * 100).toFixed(1) + "%";
+    Array.prototype.forEach.call(dots.children, function (d, i) {
+      d.className = i < idx ? "done" : (i === idx ? "now" : "");
+    });
+    back.disabled = idx === 0;
+    next.textContent = idx === total - 1 ? "Start over" : "Next step";
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  back.addEventListener("click", function () {
+    if (idx > 0) { idx--; render(); }
+  });
+  next.addEventListener("click", function () {
+    idx = idx === total - 1 ? 0 : idx + 1;
+    render();
+  });
+
+  // deep links: warn when not on Android after a click
+  var android = /Android/i.test(navigator.userAgent);
+  if (!android) {
+    var note = document.getElementById("android-note");
+    note.textContent = "You are not on an Android phone, so the button below won't open Settings. Open this page on the phone to use it.";
+    note.style.color = "var(--warn)";
+  }
+
+  // step 2 tap demo
+  var taps = 0;
+  var buildRow = document.getElementById("build-row");
+  var buildCount = document.getElementById("build-count");
+  var pips = document.getElementById("pips").children;
+  var toast = document.getElementById("toast");
+  var messages = ["One", "Two", "Three", "Four", "Five", "Six"];
+
+  function doTap() {
+    if (taps >= 7) { return; }
+    taps++;
+    pips[taps - 1].classList.add("on");
+    buildCount.textContent = taps + (taps === 1 ? " tap" : " taps");
+    if (taps < 7) {
+      toast.classList.remove("developer");
+      toast.textContent = messages[taps - 1] + (taps < 6 ? "… keep going" : "… one more");
+    } else {
+      buildRow.classList.add("good");
+      buildCount.textContent = "Developer mode on";
+      toast.classList.add("developer");
+      toast.textContent = "You are now a developer. That is the toast you will see.";
+      var chip = buildRow.querySelector(".tapchip");
+      if (chip) { chip.remove(); }
+    }
+  }
+
+  buildRow.addEventListener("click", doTap);
+  buildRow.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); doTap(); }
+  });
+
+  // step 6 command builder
+  var fIp = document.getElementById("f-ip");
+  var fPport = document.getElementById("f-pport");
+  var fCode = document.getElementById("f-code");
+  var fCport = document.getElementById("f-cport");
+  var outPair = document.getElementById("out-pair");
+  var outConn = document.getElementById("out-conn");
+
+  function clean(v) { return (v || "").trim(); }
+  function digits(v) { return clean(v).replace(/\D/g, ""); }
+
+  function build() {
+    var ip = clean(fIp.value) || "192.168.1.50";
+    var pport = digits(fPport.value) || "37123";
+    var code = digits(fCode.value);
+    var pair = "adb pair " + ip + ":" + pport + (code.length === 6 ? " " + code : "");
+    outPair.textContent = pair;
+    var cport = digits(fCport.value) || "5555";
+    outConn.textContent = "adb connect " + ip + ":" + cport;
+  }
+  [fIp, fPport, fCode, fCport].forEach(function (el) {
+    el.addEventListener("input", function () {
+      if (el === fCode) { fCode.value = digits(fCode.value).slice(0, 6); }
+      if (el === fPport || el === fCport) { el.value = digits(el.value).slice(0, 5); }
+      build();
+    });
+  });
+
+  function copyText(text, btn) {
+    function done() {
+      var old = btn.textContent;
+      btn.textContent = "Copied";
+      btn.classList.add("ok");
+      setTimeout(function () { btn.textContent = old; btn.classList.remove("ok"); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+    } else {
+      fallback(text);
+      done();
+    }
+  }
+  function fallback(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (btn) {
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-copy"));
+      copyText(target.textContent, btn);
+    });
+  });
+
+  var share = document.getElementById("share");
+  share.addEventListener("click", function () {
+    var url = location.href;
+    if (navigator.share) {
+      navigator.share({ title: "Wireless debugging, step by step", url: url }).catch(function () {});
+    } else {
+      copyText(url, share);
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
